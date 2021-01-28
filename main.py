@@ -56,7 +56,7 @@ train_params = parser.add_argument_group('Training Parameters')
 train_params.add_argument('--iters', type=int, help="# batches to optimize solver")
 train_params.add_argument('--lr', type=float, help="learning rate")
 train_params.add_argument('--batch', type=int, default=128, help="batch-size")
-train_params.add_argument('--optimizer', type=str, choices=['adam', 'adam_reset', 'sgd'], default='adam')
+train_params.add_argument('--optimizer', type=str, choices=['adam', 'adam_reset', 'sgd','Madam'], default='adam')
 
 # "memory replay" parameters
 replay_params = parser.add_argument_group('Replay Parameters')
@@ -231,6 +231,9 @@ def run(args, verbose=False):
         model.optimizer = optim.Adam(model.optim_list, betas=(0.9, 0.999))
     elif model.optim_type=="sgd":
         model.optimizer = optim.SGD(model.optim_list)
+    elif model.optim_type == 'Madam':
+        from madam import Madam
+        optimizer = Madam(model.parameters(), lr=args.lr)
     else:
         raise ValueError("Unrecognized optimizer, '{}' is not currently a valid option".format(args.optimizer))
 
